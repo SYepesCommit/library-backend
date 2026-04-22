@@ -69,7 +69,7 @@ services:
       POSTGRES_PASSWORD: nex_santi_pass
       POSTGRES_DB: library_db
     ports:
-      - "5433:5432" # <-- Cambiamos 5432 por 5433 en tu PC
+      - "5433:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
@@ -89,7 +89,16 @@ Este comando creará las tablas y generará el cliente de tipado:
 pnpm prisma migrate dev --name init
 ```
 
-###  4. Ejecución / Execution
+### 5. Generar Cliente de Prisma:
+Este paso es crucial para habilitar el tipado automático de la base de datos:
+Este comando creará las tablas y generará el cliente de tipado:
+
+```bash
+pnpm prisma generate
+```
+
+
+###  6. Ejecución / Execution
 
 ```bash
 # Desarrollo / Development
