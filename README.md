@@ -49,7 +49,7 @@ pnpm install
 ```
 
 ### 2. Base de Datos / Database
-Configura tu archivo .env con las credenciales de tu PostgreSQL:
+Configura tu archivo .env con las credenciales de tu PostgreSQL (Si no existe, es necesario crearlo en la raiz del proyecto):
 ```bash
 DATABASE_URL="postgresql://user_nex_santi:nex_santi_pass@127.0.0.1:5433/library_db?schema=public"
 PORT=3000
