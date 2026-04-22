@@ -1,0 +1,129 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+type Book {
+  """The author of the book"""
+  author: String!
+
+  """The genre of the book"""
+  gender: String!
+
+  """The unique ID of the book"""
+  id: Int!
+
+  """True if the book can be borrowed"""
+  isAvailable: Boolean!
+  reserves: [Reservation!]
+
+  """The title of the book"""
+  title: String!
+}
+
+input CreateBookInput {
+  """The name of the author"""
+  author: String!
+
+  """The genre or category of the book"""
+  gender: String!
+
+  """Initial availability status of the book"""
+  isAvailable: Boolean! = true
+
+  """The main title of the book"""
+  title: String!
+}
+
+input CreateReservationInput {
+  """ID of the book"""
+  bookId: Int!
+
+  """Estimated return date"""
+  dateDevolucion: DateTime!
+
+  """ID of the user"""
+  userId: Int!
+}
+
+input CreateUserInput {
+  """Unique email address of the user"""
+  email: String!
+
+  """The full name of the user"""
+  name: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Mutation {
+  createBook(createBookInput: CreateBookInput!): Book!
+  createReservation(createReservationInput: CreateReservationInput!): Reservation!
+  createUser(createUserInput: CreateUserInput!): User!
+  removeBook(id: Int!): Book!
+  returnBook(id: Int!): Reservation!
+  updateBook(updateBookInput: UpdateBookInput!): Book!
+}
+
+type Query {
+  book(id: Int!): Book!
+  books: [Book!]!
+  reservationsByBook(bookId: Int!): [Reservation!]!
+  reservationsByUser(endDate: DateTime, startDate: DateTime, userId: Int!): [Reservation!]!
+  user(id: Int!): User!
+  users: [User!]!
+}
+
+type Reservation {
+  """The book associated with this reservation"""
+  book: Book!
+  bookId: Int!
+
+  """The deadline for returning the book"""
+  dateDevolucion: DateTime!
+
+  """The date when the book was borrowed"""
+  dateReservation: DateTime!
+
+  """The unique ID of the reservation"""
+  id: Int!
+
+  """The actual date of return"""
+  returnedAt: DateTime
+
+  """The user associated with this reservation"""
+  user: User!
+  userId: Int!
+}
+
+input UpdateBookInput {
+  """The name of the author"""
+  author: String
+
+  """The genre or category of the book"""
+  gender: String
+  id: Int!
+
+  """Initial availability status of the book"""
+  isAvailable: Boolean = true
+
+  """The main title of the book"""
+  title: String
+}
+
+type User {
+  """The date when the user was registered"""
+  createdAt: DateTime!
+
+  """The unique email of the user"""
+  email: String!
+
+  """The unique ID of the user"""
+  id: Int!
+
+  """The full name of the user"""
+  name: String!
+  reserves: [Reservation!]
+}

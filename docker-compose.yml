@@ -1,0 +1,17 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: library_postgres_db
+    restart: always
+    environment:
+      POSTGRES_USER: user_nex_santi
+      POSTGRES_PASSWORD: nex_santi_pass
+      POSTGRES_DB: library_db
+    ports:
+      - "5433:5432" # <-- Cambiamos 5432 por 5433 en tu PC
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
