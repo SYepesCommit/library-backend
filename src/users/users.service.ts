@@ -22,7 +22,7 @@ export class UsersService {
         data: createUserInput,
       });
     } catch (error) {
-        throw new ConflictException('A user with this email already exists');
+        throw new ConflictException('Correo electrónico ya registrado');
 
     }
   }
