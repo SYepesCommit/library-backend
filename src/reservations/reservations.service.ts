@@ -88,28 +88,34 @@ export class ReservationsService {
   /**
    * (d) Return book: Marks the reservation as finished and frees the book.
    */
-  async returnBook(reservationId: number) {
-    const reservation = await this.prisma.reservation.findUnique({
-      where: { id: reservationId },
-    });
+// library-backend/src/reservations/reservations.service.ts
 
-    if (!reservation) throw new NotFoundException('Reservation not found');
-    if (reservation.returnedAt) {
-      throw new BadRequestException('This book has already been returned');
-    }
+async returnBook(reservationId: number) {
+  const reservation = await this.prisma.reservation.findUnique({
+    where: { id: reservationId },
+  });
 
-    return this.prisma.$transaction(async (tx) => {
-      const updatedReservation = await tx.reservation.update({
-        where: { id: reservationId },
-        data: { returnedAt: new Date() },
-      });
-
-      await tx.book.update({
-        where: { id: reservation.bookId },
-        data: { isAvailable: true },
-      });
-
-      return updatedReservation;
-    });
+  if (!reservation) throw new NotFoundException('Reservation not found');
+  if (reservation.returnedAt) {
+    throw new BadRequestException('This book has already been returned');
   }
+
+  return this.prisma.$transaction(async (tx) => {
+    const updatedReservation = await tx.reservation.update({
+      where: { id: reservationId },
+      data: { returnedAt: new Date() },
+      include: {
+        book: true,
+        user: true,
+      },
+    });
+
+    await tx.book.update({
+      where: { id: reservation.bookId },
+      data: { isAvailable: true },
+    });
+
+    return updatedReservation;
+  });
+}
 }

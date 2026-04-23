@@ -38,10 +38,10 @@ describe('ReservationsService', () => {
   });
 
   describe('create', () => {
-    const createDto = { 
-      userId: 1, 
-      bookId: 10, 
-      dateDevolucion: new Date() 
+    const createDto = {
+      userId: 1,
+      bookId: 10,
+      dateDevolucion: new Date()
     };
 
     it('should throw BadRequestException if book is not available (Rule #2)', async () => {
@@ -61,15 +61,15 @@ describe('ReservationsService', () => {
     it('should create reservation and update book status successfully', async () => {
       mockPrismaService.book.findUnique.mockResolvedValue({ id: 10, isAvailable: true });
       mockPrismaService.user.findUnique.mockResolvedValue({ id: 1 });
-      mockPrismaService.reservation.count.mockResolvedValue(1); 
-      
-      const expectedReservation = { 
-        id: 50, 
+      mockPrismaService.reservation.count.mockResolvedValue(1);
+
+      const expectedReservation = {
+        id: 50,
         ...createDto,
         book: { id: 10, title: 'Test Book' },
         user: { id: 1, name: 'Santiago' }
       };
-      
+
       mockPrismaService.reservation.create.mockResolvedValue(expectedReservation);
 
       const result = await service.create(createDto);
@@ -88,7 +88,7 @@ describe('ReservationsService', () => {
       const userId = 1;
       const startDate = new Date('2026-04-01');
       const endDate = new Date('2026-04-30');
-      
+
       const mockReserves = [
         { id: 1, userId, bookId: 10, dateReservation: new Date('2026-04-10'), book: { title: 'Book 1' } }
       ];
@@ -116,7 +116,7 @@ describe('ReservationsService', () => {
       const bookId = 10;
       const startDate = new Date('2026-01-01');
       const endDate = new Date('2026-12-31');
-      
+
       mockPrismaService.reservation.findMany.mockResolvedValue([]);
 
       await service.findByBookId(bookId, startDate, endDate);
@@ -137,16 +137,31 @@ describe('ReservationsService', () => {
 
   describe('returnBook (Rule #3)', () => {
     it('should mark reservation as returned and free the book', async () => {
+      // 1. Preparamos la data mockeada con las relaciones que el include espera
       const existingReservation = { id: 1, bookId: 10, returnedAt: null };
+      const updatedWithRelations = {
+        ...existingReservation,
+        returnedAt: new Date(),
+        book: { id: 10, title: 'Test Book' }, 
+        user: { id: 1, name: 'Santiago' }
+      };
+
       mockPrismaService.reservation.findUnique.mockResolvedValue(existingReservation);
-      mockPrismaService.reservation.update.mockResolvedValue({ ...existingReservation, returnedAt: new Date() });
+      mockPrismaService.reservation.update.mockResolvedValue(updatedWithRelations);
 
       await service.returnBook(1);
 
       expect(mockPrismaService.reservation.update).toHaveBeenCalledWith({
         where: { id: 1 },
-        data: expect.objectContaining({ returnedAt: expect.any(Date) }),
+        data: expect.objectContaining({
+          returnedAt: expect.any(Date)
+        }),
+        include: {
+          book: true,
+          user: true,
+        },
       });
+
       expect(mockPrismaService.book.update).toHaveBeenCalledWith({
         where: { id: 10 },
         data: { isAvailable: true },
@@ -154,9 +169,9 @@ describe('ReservationsService', () => {
     });
 
     it('should throw BadRequestException if book was already returned', async () => {
-      mockPrismaService.reservation.findUnique.mockResolvedValue({ 
-        id: 1, 
-        returnedAt: new Date() 
+      mockPrismaService.reservation.findUnique.mockResolvedValue({
+        id: 1,
+        returnedAt: new Date()
       });
 
       await expect(service.returnBook(1)).rejects.toThrow(BadRequestException);
