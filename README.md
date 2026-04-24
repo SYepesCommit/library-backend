@@ -41,6 +41,16 @@ Este proyecto es una solución robusta para la gestión de préstamos de libros,
 
 ---
 
+### Requisitos de Sistema (Prerrequisitos)
+Antes de intentar correr la aplicación, es necesario tener instalado:
+
+- Node.js Runtime: Se recomienda la v20.x o superior (desarrollado sobre v25).
+
+- PNPM (Recomendado): El proyecto utiliza pnpm para la gestión de dependencias. Si no lo tiene, puede instalarlo con:
+npm install -g pnpm
+
+- Docker: Necesario para correr Postgress sin instalar nada adicional
+
 ##  Configuración / Getting Started
 
 ### 1. Instalación de paquetes / Installation
@@ -97,8 +107,14 @@ Este comando creará las tablas y generará el cliente de tipado:
 pnpm prisma generate
 ```
 
+### 6. Sembrado de Datos (Opcional aunque necesario) 
+Este paso es el que le da vida a la aplicación. Gracias al script de seeding, la base de datos se poblará con libros y usuarios de prueba automáticamente:
 
-###  6. Ejecución / Execution
+```bash
+npx prisma db seed
+```
+
+###  7. Ejecución / Execution
 
 ```bash
 # Desarrollo / Development
