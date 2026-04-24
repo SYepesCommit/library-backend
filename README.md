@@ -104,7 +104,7 @@ pnpm start:dev
 # La consola de GraphQL estará disponible en:
 # http://localhost:3000/graphql
 
-# La consola de prisma studio
+# Abrir una nueva consola en la misma ruta para usar prisma studio
 npx prisma studio
 ```
 
