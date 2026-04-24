@@ -21,8 +21,7 @@ async function main() {
 
   console.log('Datos limpiados correctamente');
 
-  // ======== CREAR USUARIOS ========
-  console.log('👤 Creando usuarios...');
+  console.log('Creando usuarios...');
 
   const user1 = await prisma.user.create({
     data: {
