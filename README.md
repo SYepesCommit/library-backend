@@ -19,25 +19,6 @@ Este proyecto es una solución robusta para la gestión de préstamos de libros,
 * **Base de Datos**: PostgreSQL
 * **ORM**: Prisma
 * **Testing**: Jest (Unit Testing)
----
-
-
-###  Architecture Highlights
-* **GraphQL API**: Flexible and efficient data fetching.
-* **Prisma ORM**: Type-safe database access and streamlined migrations.
-* **Transactional Integrity**: Uses `$transaction` to ensure book availability and reservation records are updated atomically (Rules #2 & #3).
-* **N+1 Performance Fix**: Implemented **Eager Loading** via Prisma's `include` to optimize relational queries and prevent the N+1 problem.
-* **Business Rules**: 
-    * Maximum 3 active reservations per user.
-    * Real-time book availability tracking.
-    * Date range filtering for reservation history.
-
-###  Tech Stack
-* **Framework**: NestJS
-* **API**: GraphQL
-* **Database**: PostgreSQL
-* **ORM**: Prisma
-* **Testing**: Jest
 
 ---
 
