@@ -17,6 +17,7 @@ import { ReservationsModule } from './reservations/reservations.module';
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/schema.gql'),
       sortSchema: true,
+      introspection: true,
       playground: true,
     }),
     PrismaModule,
