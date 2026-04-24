@@ -29,7 +29,7 @@ export class ReservationsService {
     });
 
     if (activeReservationsCount >= 3) {
-      throw new BadRequestException('User has already reached the limit of 3 active reservations');
+      throw new BadRequestException('El usuario ya ha alcanzado el límite de 3 reservas activas.');
     }
 
     return this.prisma.$transaction(async (tx) => {
