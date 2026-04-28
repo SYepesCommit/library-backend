@@ -13,7 +13,7 @@ export class ReservationsService {
    * (a) Create a new reservation with business logic validation.
    */
   async create(createReservationInput: CreateReservationInput) {
-    const { userId, bookId, dateDevolucion } = createReservationInput;
+    const { userId, bookId, dateDevolucion, dateReservation } = createReservationInput;
 
     const book = await this.prisma.book.findUnique({ where: { id: bookId } });
     if (!book) throw new NotFoundException('Book not found');
@@ -38,6 +38,7 @@ export class ReservationsService {
           userId,
           bookId,
           dateDevolucion,
+          dateReservation,
         },
         include: { book: true, user: true }
       });
@@ -88,34 +89,48 @@ export class ReservationsService {
   /**
    * (d) Return book: Marks the reservation as finished and frees the book.
    */
-// library-backend/src/reservations/reservations.service.ts
+  // library-backend/src/reservations/reservations.service.ts
 
-async returnBook(reservationId: number) {
-  const reservation = await this.prisma.reservation.findUnique({
-    where: { id: reservationId },
-  });
+  async returnBook(reservationId: number) {
+    const reservation = await this.prisma.reservation.findUnique({
+      where: { id: reservationId },
+    });
 
-  if (!reservation) throw new NotFoundException('Reservation not found');
-  if (reservation.returnedAt) {
-    throw new BadRequestException('This book has already been returned');
+    if (!reservation) throw new NotFoundException('Reservation not found');
+    if (reservation.returnedAt) {
+      throw new BadRequestException('This book has already been returned');
+    }
+
+    return this.prisma.$transaction(async (tx) => {
+      const updatedReservation = await tx.reservation.update({
+        where: { id: reservationId },
+        data: { returnedAt: new Date() },
+        include: {
+          book: true,
+          user: true,
+        },
+      });
+
+      await tx.book.update({
+        where: { id: reservation.bookId },
+        data: { isAvailable: true },
+      });
+
+      return updatedReservation;
+    });
   }
 
-  return this.prisma.$transaction(async (tx) => {
-    const updatedReservation = await tx.reservation.update({
-      where: { id: reservationId },
-      data: { returnedAt: new Date() },
-      include: {
-        book: true,
-        user: true,
+  /* (e) Query to get all reservations for a specific book within a date range. */
+  async findByBook(bookId: number, startDate?: Date, endDate?: Date) {
+    return this.prisma.reservation.findMany({
+      where: {
+        bookId,
+        dateReservation: {
+          gte: startDate,
+          lte: endDate,
+        },
       },
+      include: { user: true },
     });
-
-    await tx.book.update({
-      where: { id: reservation.bookId },
-      data: { isAvailable: true },
-    });
-
-    return updatedReservation;
-  });
-}
+  }
 }

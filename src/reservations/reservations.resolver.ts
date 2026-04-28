@@ -43,6 +43,16 @@ export class ReservationsResolver {
     return this.reservationsService.findByUserId(userId, startDate, endDate);
   }
 
+  @Query(() => [Reservation], { name: 'bookReservations' })
+  bookReservations(
+    @Args('bookId', { type: () => Int }) bookId: number,
+    @Args('startDate', { type: () => Date, nullable: true }) startDate?: Date,
+    @Args('endDate', { type: () => Date, nullable: true }) endDate?: Date,
+  ) {
+    return this.reservationsService.findByBook(bookId, startDate, endDate);
+  }
+
+
   /**
    * (d) Mutation to return a book.
    * Updates returnedAt and sets book isAvailable to true.
@@ -51,4 +61,6 @@ export class ReservationsResolver {
   returnBook(@Args('id', { type: () => Int }) id: number) {
     return this.reservationsService.returnBook(id);
   }
+
+
 }

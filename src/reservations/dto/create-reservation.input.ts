@@ -29,4 +29,9 @@ export class CreateReservationInput {
   @IsDate()
   @IsNotEmpty()
   dateDevolucion!: Date;
+
+  @Field(() => Date, { description: 'Date of reservation' })
+  @IsDate()
+  @IsNotEmpty()
+  dateReservation!: Date;
 }

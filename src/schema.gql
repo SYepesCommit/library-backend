@@ -41,6 +41,9 @@ input CreateReservationInput {
   """Estimated return date"""
   dateDevolucion: DateTime!
 
+  """Date of reservation"""
+  dateReservation: DateTime!
+
   """ID of the user"""
   userId: Int!
 }
@@ -69,6 +72,7 @@ type Mutation {
 
 type Query {
   book(id: Int!): Book!
+  bookReservations(bookId: Int!, endDate: DateTime, startDate: DateTime): [Reservation!]!
   books: [Book!]!
   reservationsByBook(bookId: Int!): [Reservation!]!
   reservationsByUser(endDate: DateTime, startDate: DateTime, userId: Int!): [Reservation!]!
